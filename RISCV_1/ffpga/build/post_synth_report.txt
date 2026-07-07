@@ -1,0 +1,29 @@
+
+10. Printing statistics.
+
+=== top_forgefpga ===
+
+        +----------Local Count, excluding submodules.
+        | 
+     1064 wires
+     3654 wire bits
+     1064 public wires
+     3654 public wire bits
+        8 ports
+        8 port bits
+     1071 cells
+        1   BUFG
+       57   CARRY4
+      264   FDRE
+        2   FDSE
+       10   INV
+      133   LUT2
+       90   LUT3
+      103   LUT4
+      205   LUT5
+      101   LUT6
+        6   MUXF7
+        3   MUXF8
+       32   RAM128X1S
+       64   RAM32X1D
+

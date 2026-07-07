@@ -1,0 +1,8 @@
+read_verilog -sv "../src/UART_TX.v" "../src/FemtoRV32.v" "../src/top_forgefpga.v"
+flatten -noscopeinfo
+synth_xilinx -nobram -noiopad -nodsp -abc9 
+clean
+autoname
+write_verilog "post_synth_results.v"
+write_edif "netlist.edif"
+tee -q -o post_synth_report.txt stat
