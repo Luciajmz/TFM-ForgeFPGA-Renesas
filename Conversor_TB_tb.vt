@@ -1,0 +1,67 @@
+`timescale 1ns / 1ps
+
+module Conversor_TB_tb;
+
+    // -----------------------------------------------------------
+    // 1. Declaración de señales
+    // -----------------------------------------------------------
+    // Las entradas se declaran como 'reg' (porque el testbench las modifica)
+    reg [3:0] sw;
+    
+    // Las salidas se declaran como 'wire' (porque solo las leemos)
+    wire [6:0] seg;
+    wire [6:0] seg_oe;
+    wire anodo;
+    wire anodo_oe;
+
+    // -----------------------------------------------------------
+    // 2. Instancia del Módulo Principal (Unit Under Test - UUT)
+    // -----------------------------------------------------------
+    // Conectamos las variables de aquí con los puertos de tu 'main'
+    main uut (
+        .sw(sw), 
+        .seg(seg), 
+        .seg_oe(seg_oe), 
+        .anodo(anodo), 
+        .anodo_oe(anodo_oe)
+    );
+
+    // -----------------------------------------------------------
+    // 3. Proceso de Prueba (Estímulos)
+    // -----------------------------------------------------------
+    initial begin
+        // Configuración para guardar el archivo de ondas (.vcd)
+        // Esto permite ver las gráficas después
+        $dumpfile ("Conversor_TB_tb.vcd");
+        $dumpvars (0, Conversor_TB_tb);
+
+        // Imprimimos un encabezado en la consola
+        $display("----------------------------------------------------------------");
+        $display(" Tiempo | Input (Hex) | Salida Seg (Binario) | Estado");
+        $display("----------------------------------------------------------------");
+        
+        // El $monitor imprime una línea cada vez que una señal cambia
+        // Recuerda: 0 en 'seg' significa ENCENDIDO (Lógica Inversa)
+        $monitor("%0t ns |      %h       |       %b        | (0=ON, 1=OFF)", $time, sw, seg);
+
+        // --- INICIO DE LA SECUENCIA DE PRUEBA ---
+        
+        // 1. Inicializamos en 0
+        sw = 4'h0;
+        #10; // Esperamos 10 nanosegundos
+
+        // 2. Bucle para probar todos los valores hexadecimales (0 al F)
+        // Usamos un bucle 'repeat' para ahorrar líneas de código
+        repeat (15) begin
+            sw = sw + 1; // Incrementamos el switch
+            #10;         // Esperamos 10 ns para ver el resultado
+        end
+
+        // 3. Esperamos un poco más y terminamos
+        #20;
+        $display("----------------------------------------------------------------");
+        $display("Simulación completada con éxito.");
+        $finish; // Detiene la simulación
+    end
+
+endmodule

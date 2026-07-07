@@ -1,0 +1,70 @@
+`timescale 1ns / 1ps
+// SIN `include — Go Configure compila ambos archivos juntos
+
+module cronometro_top_tb;
+
+// -----------------------------------------------------------
+// 1. Señales
+// -----------------------------------------------------------
+reg  clk;
+reg  nreset;
+reg  pause;
+
+wire [6:0] seg;
+wire [6:0] seg_oe;
+wire       anode;
+wire       anode_oe;
+wire       osc_en;
+
+// -----------------------------------------------------------
+// 2. Instancia UUT
+// -----------------------------------------------------------
+cronometro_top uut (
+    .clk      (clk),
+    .nreset   (nreset),
+    .pause    (pause),
+    .seg      (seg),
+    .seg_oe   (seg_oe),
+    .anode    (anode),
+    .anode_oe (anode_oe),
+    .osc_en   (osc_en)
+);
+
+// -----------------------------------------------------------
+// 3. Reloj 50 MHz → periodo 20 ns
+// -----------------------------------------------------------
+initial clk = 1'b0;
+always #10 clk = ~clk;
+
+// -----------------------------------------------------------
+// 4. Estímulos
+// -----------------------------------------------------------
+initial begin
+    $dumpfile("cronometro_top_tb.vcd");
+    $dumpvars(0, cronometro_top_tb);
+
+    $display("--- Inicio simulacion ---");
+    $monitor("%0t ns | nreset=%b pause=%b | seg=%b anode=%b",
+             $time, nreset, pause, seg, anode);
+
+    // Reset activo (activo bajo)
+    nreset = 1'b0;
+    pause  = 1'b0;
+    #200;                    // 10 ciclos de reloj en reset
+
+    // Soltar reset → el contador arranca
+    nreset = 1'b1;
+    #200_000_000;            // 200 ms → verás ~4 ticks del contador
+
+    // Probar pausa
+    pause = 1'b1;
+    #100_000_000;            // 100 ms pausado
+
+    pause = 1'b0;
+    #100_000_000;            // 100 ms más corriendo
+
+    $display("--- Simulacion completada ---");
+    $finish;
+end
+
+endmodule

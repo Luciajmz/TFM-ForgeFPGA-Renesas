@@ -1,0 +1,62 @@
+// Custom testbench
+
+`timescale 1ns / 1ps
+
+module TB_leds_tb;
+
+
+    // Señales de prueba (reg para entradas, wire para salidas)
+    reg  [3:0] sw;
+    wire [3:0] led;
+    wire [3:0] led_oe;
+
+    // Instanciamos el DUT (Device Under Test)
+    main uut (
+        .sw(sw),
+        .led(led),
+        .led_oe(led_oe)
+    );
+
+    // Bloque de estimulación
+    initial begin
+        
+        // Monitor para ver los cambios en consola
+        $monitor("Tiempo=%0t | sw=%b | led=%b | led_oe=%b", 
+                  $time, sw, led, led_oe);
+
+        // Inicializamos
+        sw = 4'b0000;
+        #10;
+
+        sw = 4'b0001;
+        #10;
+
+        sw = 4'b0010;
+        #10;
+
+        sw = 4'b0100;
+        #10;
+
+        sw = 4'b1000;
+        #10;
+
+        sw = 4'b1111;
+        #10;
+
+        sw = 4'b1010;
+        #10;
+
+        sw = 4'b0101;
+        #10;
+
+        // Finalizamos simulación
+        $finish;
+    end
+
+	initial begin
+	$dumpfile("sim_output.vcd");
+	$dumpvars(0, uut);
+	
+	end
+
+endmodule
